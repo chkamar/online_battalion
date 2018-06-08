@@ -15,7 +15,7 @@ public class ManageImage {
 
     @Scheduled(cron = "0 0 0 ? * MON")
     public void manage(){
-
+        //TODO
         System.out.print("图片文件清理成功");
 
     }
