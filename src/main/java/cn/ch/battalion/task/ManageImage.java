@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 public class ManageImage {
 
+    //TODO 该功能未完成
     @Scheduled(cron = "0 0 0 ? * MON")
     public void manage(){
         //TODO
