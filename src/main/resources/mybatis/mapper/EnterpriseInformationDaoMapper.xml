@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为EnterpriseInformationDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.EnterpriseInformationDao">
+    <select id="select" resultType="cn.ch.battalion.core.model.EnterpriseInformation">
+        select id,name,summary,address,offical_telephone as officalTelephone,hr_telephone as hrTelephone
+        from enterprise_information
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(*)
+        from enterprise_information
+    </select>
+
+    <insert id="add" parameterType="cn.ch.battalion.core.model.EnterpriseInformation">
+        insert into enterprise_information(name,summary,address,offical_telephone,hr_telephone)
+        values(#{name},#{summary},#{address},#{officalTelephone},#{hrTelephone})
+    </insert>
+
+    <update id="update" parameterType="cn.ch.battalion.core.model.EnterpriseInformation">
+        update enterprise_information
+        set name = #{name},summary = #{summary},address = #{address},
+        offical_telephone = #{officalTelephone},hr_telephone = #{hrTelephone}
+    </update>
+</mapper>

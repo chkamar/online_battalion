@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为BattalionDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.BattalionDao">
+    <sql id="listWhere">
+        <choose>
+            <when test="data!=null">
+                <if test="data.typeId!=null and data.typeId>0">
+                    and t.id = #{data.typeId}
+                </if>
+                <if test="data.name!=null and data.name!=''">
+                    and b.name like concat(concat('%',#{data.name}),'%')
+                </if>
+                <choose>
+                    <when test="data.sort=='time_start'">
+                        order by b.time_start
+                    </when>
+                    <when test="data.sort=='time_end'">
+                        order by b.time_end
+                    </when>
+                    <when test="data.sort=='deadline'">
+                        order by b.deadline
+                    </when>
+                    <otherwise>
+                        order by b.enrollment
+                    </otherwise>
+                </choose>
+                <choose>
+                    <when test="data.sc=='asc'">
+                        asc
+                    </when>
+                    <otherwise>
+                        desc
+                    </otherwise>
+                </choose>
+
+            </when>
+            <otherwise>
+                order by b.enrollment desc
+            </otherwise>
+
+        </choose>
+        limit #{start},#{pageSize}
+    </sql>
+    <select id="selects" resultType="cn.ch.battalion.api.service.bean.BattalionBean">
+        select DISTINCT b.id,b.name,b.image_path as imagePath,b.time_start as timeStart,
+        b.time_end as timeEnd,b.deadline as deadline,t.name as type,t.id as typeId,
+        b.enrollment
+        from battalion b,battalion_type t,battalion_type_relation tr
+        where b.id = tr.battalion_id
+        and t.id = tr.type_id
+        and b.status = '报名中'
+        <include refid="listWhere"></include>
+    </select>
+
+    <select id="selectSimples" resultType="cn.ch.battalion.api.service.bean.BattalionSimpleBean">
+        select DISTINCT b.id,b.name,t.name as type,b.status
+        from battalion b,battalion_type t,battalion_type_relation tr
+        where b.id = tr.battalion_id
+        and t.id = tr.type_id
+        <include refid="listWhere"></include>
+    </select>
+
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(DISTINCT b.id)
+        from battalion b,battalion_type_relation tr
+        where b.status = '报名中'
+        <if test="data!=null">
+            and b.id = tr.battalion_id
+            <if test="data.typeId!=null and data.typeId>0">
+                and tr.type_id = #{data.typeId}
+            </if>
+            <if test="data.name!=null and data.name!=''">
+                and b.name like concat(concat('%',#{data.name}),'%')
+            </if>
+        </if>
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(DISTINCT b.id)
+        from battalion b,battalion_type_relation tr
+        where 1>0
+        <if test="data!=null">
+            and b.id = tr.battalion_id
+            <if test="data.typeId!=null and data.typeId>0">
+                and tr.type_id = #{data.typeId}
+            </if>
+            <if test="data.name!=null and data.name!=''">
+                and b.name like concat(concat('%',#{data.name}),'%')
+            </if>
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="cn.ch.battalion.core.model.Battalion">
+        insert into battalion(name,image_path,time_start,time_end,deadline,enrollment,
+        duration,place,status,description,rank,price)
+        values(#{name},#{imagePath},#{timeStart},#{timeEnd},#{deadline},10,
+        #{duration},#{place},'报名中',#{description},#{rank},#{price})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from battalion
+        where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="cn.ch.battalion.core.model.Battalion">
+        update battalion
+        set name = #{name},image_path = #{imagePath},time_start = #{timeStart},
+        time_end = #{timeEnd},deadline = #{deadline},
+        duration = #{duration},place = #{place},status = #{status},description = #{description},
+        rank = #{rank},price = #{price}
+        where id = #{id}
+    </update>
+
+    <update id="subtractEnrollment" parameterType="java.lang.Long">
+        UPDATE battalion
+        set enrollment = enrollment - 1
+        where id = #{id}
+    </update>
+
+    <update id="addEnrollment" parameterType="java.lang.Long">
+        UPDATE battalion
+        set enrollment = enrollment + 1
+        where id = #{id}
+    </update>
+
+    <select id="selectByRank" resultType="cn.ch.battalion.api.service.bean.BattalionBean">
+        select DISTINCT b.id,b.name,b.image_path as imagePath,b.time_start as timeStart,
+        b.time_end as timeEnd,b.deadline as deadline,b.enrollment
+        from battalion b,battalion_type t,battalion_type_relation tr
+        where b.id = tr.battalion_id
+--         and b.id = rec.battalion_id
+        and t.id = tr.type_id
+        <if test="id!=null">
+            and b.id != #{id}
+        </if>
+        <if test="typeId!=null">
+            and t.id = #{typeId}
+        </if>
+        order by b.rank asc
+
+        <if test="limit!=null">
+            limit #{limit}
+        </if>
+
+    </select>
+
+    <select id="select" resultType="cn.ch.battalion.api.service.bean.BattalionBean">
+        select DISTINCT b.id,b.name,b.image_path as imagePath,b.time_start as timeStart,
+        b.time_end as timeEnd,b.deadline as deadline,b.enrollment,b.place,b.duration,b.status,
+        b.description,b.rank,b.price,
+        t.name as type,b.description,t.id as typeId
+        from battalion b,battalion_type_relation tr,battalion_type t
+        where b.id = tr.battalion_id
+        and t.id = tr.type_id
+        and b.id = #{id}
+    </select>
+    
+    <select id="selectIdByName" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT id
+        from battalion
+        where name = #{name}
+    </select>
+    
+    <select id="selectName" parameterType="java.lang.Long" resultType="java.lang.String">
+        select name
+        from battalion
+        where id = #{id}
+    </select>
+</mapper>

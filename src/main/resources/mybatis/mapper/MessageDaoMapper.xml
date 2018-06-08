@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为MessageDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.MessageDao">
+
+    <select id="selects" resultType="cn.ch.battalion.core.model.Message">
+        select id,user_id as userId,content,time
+        from message
+        order by time desc
+        limit #{start},#{pageSize}
+    </select>
+
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*) from message
+    </select>
+
+    <insert id="insert" parameterType="cn.ch.battalion.core.model.Message">
+        insert into message(user_id,content,time)
+        values(#{userId},#{content},#{time})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from message
+        where id = #{id}
+    </delete>
+
+</mapper>

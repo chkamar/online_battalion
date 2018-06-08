@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为ImageDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.ImageDao">
+    <select id="selectByType" parameterType="java.lang.String" resultType="cn.ch.battalion.core.model.Image">
+        select id,path
+        from image
+        where type = #{type}
+    </select>
+
+    <select id="selectPathByType" parameterType="java.lang.String" resultType="java.lang.String">
+        select path
+        from image
+        where type = #{type}
+    </select>
+    
+    <insert id="insert">
+        insert into image(path,type)
+        values(#{path},#{type})
+    </insert>
+
+    <delete id="delete">
+        delete from image
+        where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为NewsDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.NewsDao">
+
+    <select id="selects" resultType="cn.ch.battalion.core.model.News">
+        select id,title,time,content,read_count as readCount,image_path as imagePath
+        from news
+        order by time desc
+        limit #{start},#{pageSize}
+    </select>
+
+    <update id="updateReadCount" parameterType="java.lang.Long">
+        update news
+        set read_count = read_count+1
+        where id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="cn.ch.battalion.core.model.News">
+        insert into news(title,time,content,read_count,image_path)
+        values(#{title},#{time},#{content},0,#{imagePath})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from news
+        where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="cn.ch.battalion.core.model.News">
+        update news
+        set title = #{title},time = #{time},content = #{content},read_count = 0,image_path = #{imagePath}
+        where id = #{id}
+    </update>
+
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*) from news
+    </select>
+
+    <select id="select" resultType="cn.ch.battalion.core.model.News" parameterType="java.lang.Long">
+        select id,title,time,content,read_count as readCount,image_path as imagePath
+        from news
+        where id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为RecruitmentDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.RecruitmentDao">
+    <select id="selects" parameterType="cn.ch.battalion.api.base.bean.PageRequest"
+            resultType="cn.ch.battalion.core.model.Recruitment">
+        select id,position_name as positionName,position_type as positionType,working_place as workingPlace,
+        publish_time as publishTime,job_nature as jobNature
+        from recruitment
+        <if test="data!=null">
+            where category = #{data}
+        </if>
+        limit #{start},#{pageSize}
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(DISTINCT id)
+        from recruitment
+        <if test="data!=null">
+            where category = #{data}
+        </if>
+    </select>
+    
+    <select id="select" resultType="cn.ch.battalion.core.model.Recruitment">
+        select id,position_name as positionName,position_type as positionType,working_place as workingPlace,
+        publish_time as publishTime,category,job_nature as jobNature,salary_range as salaryRange,
+        job_duty as jobDuty,qualifications
+        from recruitment
+        where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="cn.ch.battalion.core.model.Recruitment">
+      insert into recruitment(position_name,position_type,working_place,publish_time,category,job_nature
+      ,salary_range,job_duty,qualifications)
+      values(#{positionName},#{positionType},#{workingPlace},#{publishTime},#{category},#{jobNature}
+      ,#{salaryRange},#{jobDuty},#{qualifications})
+    </insert>
+    
+    <delete id="delete">
+        delete from recruitment
+        where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="cn.ch.battalion.core.model.Recruitment">
+        update recruitment
+        set position_name = #{positionName},position_type = #{positionType},working_place = #{workingPlace},
+        publish_time = #{publishTime},category = #{category},job_nature = #{jobNature},salary_range = #{salaryRange}
+        ,job_duty = #{jobDuty},qualifications = #{qualifications}
+        where id = #{id}
+    </update>
+
+</mapper>

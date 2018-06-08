@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为AdminDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.AdminDao">
+    <select id="selectId" parameterType="cn.ch.battalion.core.model.Admin" resultType="java.lang.Long">
+        select id from admin
+        where name = #{name}
+        and password = #{password}
+    </select>
+
+    <update id="updatePassword">
+        update admin
+        set password = #{password}
+        where id = #{id}
+    </update>
+</mapper>

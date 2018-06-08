@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为BattalionTypeRelationDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.BattalionTypeRelationDao">
+    <insert id="insert">
+        insert into battalion_type_relation(battalion_id,type_id)
+        values(#{battalionId},#{typeId})
+    </insert>
+
+    <delete id="delete">
+        delete from battalion_type_relation
+        where battalion_id = #{battalionId}
+    </delete>
+</mapper>

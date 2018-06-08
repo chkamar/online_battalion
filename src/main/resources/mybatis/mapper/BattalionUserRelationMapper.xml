@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为BattalionUserRelationDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.BattalionUserRelationDao">
+    <insert id="insert" parameterType="cn.ch.battalion.core.model.BattalionUserRelation">
+        insert into battalion_user_relation(battalion_id,user_id,time)
+        values(#{battalionId},#{userId},#{time})
+    </insert>
+
+    <select id="selectByBattalionId" resultType="cn.ch.battalion.api.service.bean.Enrollment" parameterType="java.lang.Long">
+        select r.id,u.name as username,r.time,r.status
+        from battalion_user_relation r,user u
+        where u.id = r.user_id
+        and r.battalion_id = #{battalionId}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from battalion_user_relation
+        where id = #{id}
+    </delete>
+
+    <select id="selectDeadlineByRelationId" parameterType="java.lang.Long">
+        select time_deadline
+        from battalion_user_relation r,battalion b
+        where r.battalion_id = b.id
+        and r.id = #{relationId}
+    </select>
+
+    <select id="selectRecord" resultType="java.lang.Integer">
+        select count(id)
+        from battalion_user_relation
+        where battalion_id = #{battalionId}
+        and user_id = #{userId}
+    </select>
+
+    <delete id="deleteByBattalionId">
+        delete from battalion_user_relation
+        where battalion_id = #{battalionId}
+    </delete>
+
+    <select id="selectCount" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*)
+        from battalion_user_relation
+        where battalion_id = #{battalionId}
+    </select>
+    
+    <select id="selectBattalionId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select battalion_id
+        from battalion_user_relation
+        where id = #{id}
+    </select>
+    
+    <update id="updateStatus">
+        update battalion_user_relation
+        set status = 1
+        where id = #{id}
+    </update>
+</mapper>

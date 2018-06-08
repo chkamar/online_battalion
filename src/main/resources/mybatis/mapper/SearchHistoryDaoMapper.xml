@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为SearchHistoryDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.ch.battalion.core.dao.SearchHistoryDao">
+    <!--<select id="selects" resultType="cn.ch.battalion.api.service.bean.HistoryBean">-->
+        <!--select id,content-->
+        <!--from search_history-->
+        <!--where user_id = #{userId}-->
+        <!--order by time desc-->
+        <!--limit #{limit}-->
+    <!--</select>-->
+
+    <select id="selects" resultType="java.lang.String">
+        select content
+        from search_history
+        where user_id = #{userId}
+        and user_type = #{userType}
+        order by time desc
+        limit #{limit}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from search_history
+        where id = #{id}
+    </delete>
+
+    <delete id="delete" parameterType="java.lang.String">
+        delete from search_history
+        where content = #{content}
+    </delete>
+
+    <select id="selectId" resultType="java.lang.Long">
+        select id
+        from search_history
+        where user_id = #{userId}
+        and content = #{content}
+    </select>
+
+    <update id="update">
+        update search_history
+        set time = #{time}
+        where id = #{id}
+    </update>
+
+    <insert id="insert">
+        insert into search_history(user_id,time,content)
+        value(#{userId},#{time},#{content})
+    </insert>
+    
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(id)
+        from search_history
+    </select>
+    
+    <delete id="deleteOld">
+        delete from search_history
+        where id = (
+        select id
+        from search_history
+        order by time asc
+        limit 1
+        )
+    </delete>
+</mapper>
