@@ -1,18 +1,36 @@
 package cn.ch.battalion.core.model;
 
-import cn.ch.battalion.api.base.model.BaseModel;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.sql.Date;
 
 /**
  * Created by karma on 2018/4/1.
  */
-public class News extends BaseModel {
+@Document(collection="news")
+public class News{
+    @Id
+    private Long id;
+    @Field
     private String title;
+    @Field
     private Date time;
+    @Field
     private String content;
+    @Field
     private Integer readCount;
+    @Field
     private String imagePath;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getImagePath() {
         return imagePath;
